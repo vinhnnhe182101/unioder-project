@@ -1,0 +1,113 @@
+version: '3.8'
+
+services:
+  # =======================================
+  # DATABASE CHO USER SERVICE (auth_db)
+  # =======================================
+  auth_db:
+    image: mysql:8.0
+    container_name: auth_db
+    environment:
+      # Khớp với file application.properties của bạn
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: auth_service
+    ports:
+      # Khớp với file application.properties của bạn
+      - "3307:3306"
+    volumes:
+      # Giữ lại data khi tắt/bật container
+      - auth_db_data:/var/lib/mysql
+    networks:
+      - uniorder-network
+
+  # =======================================
+  # CÁC DATABASE CHO TƯƠNG LAI
+  # (Bạn có thể bỏ qua, nhưng để đây cho hoàn chỉnh)
+  # =======================================
+
+  # 2. Database cho Catalog Service (ví dụ)
+  catalog_db:
+    image: mysql:8.0
+    container_name: catalog_db
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: catalog_service
+    ports:
+      - "3308:3306" # Dùng cổng 3308 để tránh xung đột
+    volumes:
+      - catalog_db_data:/var/lib/mysql
+      - ./uploads:/app/uploads
+    networks:
+      - uniorder-network
+
+  # 3. Database cho Order Service (ví dụ)
+  order_db:
+    image: mysql:8.0
+    container_name: order_db
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: order_service
+    ports:
+      - "3309:3306"
+    volumes:
+      - order_db_data:/var/lib/mysql
+    networks:
+      - uniorder-network
+
+  notification_db:
+    image: mysql:8.0
+    container_name: notification_db
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: notification_service
+    ports:
+      - "3310:3306" # Cổng 3310
+    volumes:
+      - notification_db_data:/var/lib/mysql
+    networks:
+      - uniorder-network
+
+  integration_db:
+    image: mysql:8.0
+    container_name: integration_db
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: integration_service
+    ports:
+      - "3311:3306" # Cổng 3310
+    volumes:
+      - integration_db_data:/var/lib/mysql
+    networks:
+      - uniorder-network
+  # 4. Database cho Audit Service (NoSQL)
+  audit_db:
+    image: mongo:6.0
+    container_name: audit_db
+    ports:
+      - "27017:27017"
+    volumes:
+      - audit_db_data:/data/db
+    networks:
+      - uniorder-network
+
+  # 5. "Cột sống" giao tiếp (Event Bus)
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq_uni_order
+    ports:
+      - "5672:5672"   # Cổng cho các service
+      - "15672:15672" # Cổng giao diện web
+    networks:
+      - uniorder-network
+
+networks:
+  uniorder-network:
+    driver: bridge
+# Định nghĩa các "Volumes" để giữ lại dữ liệu
+volumes:
+  auth_db_data:
+  catalog_db_data:
+  order_db_data:
+  notification_db_data:
+  integration_db_data:
+  audit_db_data:

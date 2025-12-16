@@ -1,0 +1,9 @@
+
+ALTER TABLE users
+ADD COLUMN enabled BOOLEAN NOT NULL DEFAULT FALSE;
+
+ALTER TABLE users
+ADD COLUMN verification_token VARCHAR(255);
+
+ALTER TABLE users
+ADD COLUMN token_expiration_time TIMESTAMP;

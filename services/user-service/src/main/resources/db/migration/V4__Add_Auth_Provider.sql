@@ -1,0 +1,9 @@
+
+ALTER TABLE users
+    ADD COLUMN provider VARCHAR(50) DEFAULT 'LOCAL';
+
+ALTER TABLE users
+    ADD COLUMN provider_id VARCHAR(255);
+
+ALTER TABLE users
+    MODIFY COLUMN password_hash VARCHAR(255) NULL;
