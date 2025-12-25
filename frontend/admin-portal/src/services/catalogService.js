@@ -1,6 +1,6 @@
 import axiosClient from '../config/axiosConfig';
 
-const CATALOG_BASE_URL = '/catalog'; // Gateway sẽ route /api/catalog -> catalog-service
+const CATALOG_BASE_URL = '/catalog';
 
 const catalogService = {
     // --- CATEGORIES ---
@@ -43,8 +43,12 @@ const catalogService = {
         });
     },
 
-    toggleProductAvailability: (productId, isAvailable) => {
-        return axiosClient.put(`${BASE_URL}/products/${productId}`, { isAvailable });
+    deleteProduct: (id) => {
+        return axiosClient.delete(`${CATALOG_BASE_URL}/products/${id}`);
+    },
+
+    toggleProductAvailability: (productId) => {
+        return axiosClient.put(`/catalog/products/${productId}/availability`);
     }
 };
 

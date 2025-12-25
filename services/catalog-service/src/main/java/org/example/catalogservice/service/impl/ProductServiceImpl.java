@@ -123,14 +123,23 @@ public class ProductServiceImpl implements ProductService {
 
         // Update Option
         if (request.getOptionIds() != null) {
+
+            product.getOptionAssignments().clear();
+
+            productRepository.flush();
+
             List<ProductOptionEntity> newOptions = productOptionRepository.findAllById(request.getOptionIds());
+
+            int displayOrder = 0;
             for (ProductOptionEntity opt : newOptions) {
                 if (!opt.getRestId().equals(restId)) throw new RuntimeException("Invalid Option");
+
+                product.addOption(opt, displayOrder++);
             }
-            product.setOptions(newOptions);
         }
 
-        return productMapper.toResponse(productRepository.save(product));
+        ProductEntity savedProduct = productRepository.save(product);
+        return productMapper.toResponse(savedProduct);
     }
 
     @Transactional

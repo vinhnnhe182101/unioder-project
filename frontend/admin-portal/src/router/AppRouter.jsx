@@ -19,6 +19,8 @@ import POSPage from '../pages/orders/POSPage';
 import NotificationPage from '../pages/notifications/NotificationPage';
 import DashboardPage from '../pages/dashboard/DashboardPage';
 import ProfilePage from '../pages/profile/ProfilePage';
+import SettingsPage from '../pages/settings/SettingsPage';
+import StaffPage from '../pages/staff/StaffPage';
 
 const RestaurantGuard = () => {
     const restaurant = localStorage.getItem('currentRestaurant');
@@ -68,9 +70,11 @@ const AppRouter = () => {
                         { path: 'catalog/products', element: <ProductPage /> },
                         { path: 'catalog/options', element: <OptionPage /> },
                         { path: 'notifications', element: <NotificationPage /> },
+                        {path: 'staff', element: <StaffPage /> },
                         { path: 'profile', element: <ProfilePage /> }
                     ]
-                }
+                },
+                { path: 'settings', element: <SettingsPage /> }
             ]
         },
         {

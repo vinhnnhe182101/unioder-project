@@ -86,10 +86,9 @@ public class ProductEntity {
         if (this.optionAssignments == null) {
             this.optionAssignments = new ArrayList<>();
         }
+
         this.optionAssignments.clear();
-        for (ProductOptionEntity opt : options) {
-            this.addOption(opt, 0);
-        }
+
     }
 
     public List<ProductOptionEntity> getOptions() {

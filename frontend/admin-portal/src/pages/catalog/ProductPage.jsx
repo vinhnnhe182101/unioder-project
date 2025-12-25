@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { Table, Button, Modal, Form, Input, InputNumber, Select, message, Card, Space, Tag, Image, Switch, Upload  } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { Table, Button, Modal, Form, Input, InputNumber, Select, message, Card, Space, Tag, Image, Switch, Upload, Popconfirm  } from 'antd';
+import { PlusOutlined, EditOutlined, DeleteOutlined, UploadOutlined } from '@ant-design/icons';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import catalogService from '../../services/catalogService';
 
@@ -36,24 +36,35 @@ const ProductPage = () => {
         onError: (err) => message.error('Lỗi: ' + (err.response?.data?.message || err.message)),
     });
 
+    const deleteMutation = useMutation({
+        mutationFn: catalogService.deleteProduct,
+        onSuccess: () => {
+            message.success('Đã xóa món ăn');
+            queryClient.invalidateQueries(['products']);
+        },
+        onError: (err) => message.error('Lỗi xóa: ' + err.message)
+    });
+
     const handleSave = (values) => {
         const formData = new FormData();
 
-        // 1. Chuẩn bị JSON data
+        // Chuẩn bị JSON data
         const productData = {
             name: values.name,
             categoryId: values.categoryId,
             price: values.price,
+            sku: values.sku,
+            description: values.description,
             optionIds: values.optionIds || [],
-            description: values.description || '',
-            // Nếu không upload file mới, giữ nguyên imgUrl cũ (nếu có logic xử lý bên BE)
+            // Nếu đang sửa mà không up ảnh mới -> giữ nguyên link cũ
             imgUrl: editingProduct ? editingProduct.imgUrl : null
         };
 
+        // Append JSON vào key 'data'
         const jsonBlob = new Blob([JSON.stringify(productData)], { type: 'application/json' });
         formData.append('data', jsonBlob);
 
-        // 2. Append File nếu có
+        // Append File vào key 'file' (nếu có file mới)
         if (fileList.length > 0 && fileList[0].originFileObj) {
             formData.append('file', fileList[0].originFileObj);
         }
@@ -63,26 +74,35 @@ const ProductPage = () => {
 
     const handleEdit = (record) => {
         setEditingProduct(record);
+
+        // Tìm categoryId dựa trên tên (nếu backend trả về name) hoặc ID (nếu có)
+        // Giả sử backend trả về categoryName, ta cần tìm ID tương ứng trong list categories
+        const cat = categories?.find(c => c.name === record.categoryName);
+
+        // Fill dữ liệu vào form
         form.setFieldsValue({
             name: record.name,
-            categoryId: categories?.find(c => c.name === record.categoryName)?.categoryId, // Tìm ID từ tên (hoặc BE trả về ID thì tốt hơn)
+            categoryId: cat ? cat.categoryId : null,
             price: record.price,
+            sku: record.sku,
             description: record.description,
-            // Option logic cần map lại nếu BE trả về object
-            optionIds: record.options?.map(o => o.optionId)
+            // Map danh sách option object thành danh sách ID
+            optionIds: record.options?.map(o => o.optionId) || []
         });
 
-        // Hiển thị ảnh cũ trong Upload component
+        // Hiển thị ảnh cũ trong khung Upload
         if (record.imgUrl) {
+            const url = record.imgUrl.startsWith('http') ? record.imgUrl : `${BASE_IMG_URL}/catalog${record.imgUrl}`;
             setFileList([{
                 uid: '-1',
                 name: 'image.png',
                 status: 'done',
-                url: record.imgUrl.startsWith('http') ? record.imgUrl : `${BASE_IMG_URL}/catalog${record.imgUrl}` // Fix đường dẫn ảnh local
+                url: url
             }]);
         } else {
             setFileList([]);
         }
+
         setIsModalOpen(true);
     };
 
@@ -96,19 +116,13 @@ const ProductPage = () => {
     const handleFileChange = ({ fileList: newFileList }) => setFileList(newFileList);
 
     const toggleMutation = useMutation({
-        mutationFn: ({ id, isAvailable }) => catalogService.toggleProductAvailability(id, isAvailable),
+        mutationFn: (productId) => catalogService.toggleProductAvailability(productId),
         onSuccess: () => {
             message.success('Cập nhật trạng thái thành công');
             queryClient.invalidateQueries(['products']);
         },
         onError: () => message.error('Không thể cập nhật trạng thái')
     });
-
-    const handleCreate = (values) => {
-        // Values trả về từ form: { name, price, categoryId, optionIds: [1, 2] }
-        // Backend DTO cần: { categoryId, name, price, optionIds... }
-        createMutation.mutate(values);
-    };
 
     const columns = [
         {
@@ -150,15 +164,15 @@ const ProductPage = () => {
         },
         {
             title: 'Trạng thái (Bán/Ngưng)',
-            dataIndex: 'isAvailable',
-            key: 'isAvailable',
+            dataIndex: 'available',
+            key: 'available',
             render: (avail, record) => (
                 <Switch
                     checkedChildren="Bán"
-                    unCheckedChildren="Hết"
-                    checked={avail}
+                    unCheckedChildren="Ngưng"
+                    checked={record.available}
                     loading={toggleMutation.isPending}
-                    onChange={(checked) => toggleMutation.mutate({ id: record.productId, isAvailable: checked })}
+                    onChange={() => toggleMutation.mutate(record.productId)}
                 />
             )
         },
@@ -167,8 +181,14 @@ const ProductPage = () => {
             key: 'action',
             render: (_, record) => (
                 <Space size="middle">
-                    <Button type="text" icon={<EditOutlined />} style={{ color: 'blue' }} />
-                    <Button type="text" danger icon={<DeleteOutlined />} />
+                    <Button type="text" icon={<EditOutlined />} style={{ color: 'blue' }} onClick={() => handleEdit(record)}  />
+                    <Popconfirm
+                        title="Bạn chắc chắn muốn xóa?"
+                        onConfirm={() => deleteMutation.mutate(record.productId)}
+                        okText="Xóa" cancelText="Hủy"
+                    >
+                        <Button danger icon={<DeleteOutlined />} />
+                    </Popconfirm>
                 </Space>
             ),
         },
@@ -223,9 +243,14 @@ const ProductPage = () => {
 
                     <Form.Item name="description" label="Mô tả"><Input.TextArea rows={2} /></Form.Item>
 
-                    <Button type="primary" htmlType="submit" block loading={saveMutation.isPending}>
-                        {editingProduct ? "Cập nhật" : "Lưu Món Ăn"}
-                    </Button>
+                    <div style={{ textAlign: 'right' }}>
+                        <Space>
+                            <Button onClick={handleCloseModal}>Hủy</Button>
+                            <Button type="primary" htmlType="submit" loading={saveMutation.isPending}>
+                                {editingProduct ? "Lưu thay đổi" : "Tạo mới"}
+                            </Button>
+                        </Space>
+                    </div>
                 </Form>
             </Modal>
         </div>

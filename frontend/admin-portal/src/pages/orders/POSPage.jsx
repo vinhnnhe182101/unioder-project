@@ -5,6 +5,7 @@ import { useQuery, useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import catalogService from '../../services/catalogService';
 import orderService from '../../services/orderService';
+import { resolveImageUrl } from '../../utils/image';
 
 const { Meta } = Card;
 const { Title, Text } = Typography;
@@ -33,7 +34,7 @@ const POSPage = () => {
 
     // 1. Xử lý khi click vào món ăn
     const handleProductClick = (product) => {
-        if (!product.isAvailable) {
+        if (!product.available) {
             message.warning('Món này đang tạm hết hàng!');
             return;
         }
@@ -152,8 +153,8 @@ const POSPage = () => {
                                 hoverable
                                 cover={
                                     <div style={{ position: 'relative' }}>
-                                        <img alt={p.name} src={p.imgUrl || "https://via.placeholder.com/150"} style={{ height: 120, width: '100%', objectFit: 'cover', filter: p.isAvailable ? 'none' : 'grayscale(100%)' }} />
-                                        {!p.isAvailable && (
+                                        <img alt={p.name} src={resolveImageUrl(p.imgUrl) || "https://via.placeholder.com/150"} style={{ height: 120, width: '100%', objectFit: 'cover', filter: p.available ? 'none' : 'grayscale(100%)' }} />
+                                        {!p.available && (
                                             <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                                                 <Tag color="red" style={{ fontSize: 16, padding: '5px 10px' }}>HẾT HÀNG</Tag>
                                             </div>
@@ -161,7 +162,7 @@ const POSPage = () => {
                                     </div>
                                 }
                                 onClick={() => handleProductClick(p)}
-                                style={{ opacity: p.isAvailable ? 1 : 0.7, pointerEvents: p.isAvailable ? 'auto' : 'none' }}
+                                style={{ opacity: p.available ? 1 : 0.7, pointerEvents: p.available ? 'auto' : 'none' }}
                             >
                                 <Meta title={p.name} description={<Text type="danger" strong>{p.price.toLocaleString()}đ</Text>} />
                             </Card>
@@ -223,7 +224,7 @@ const POSPage = () => {
                 <Form form={form} layout="vertical" onFinish={handleOptionSubmit}>
                     {selectedProduct?.options?.map(group => (
                         <Form.Item key={group.optionId} name={`option_${group.optionId}`} label={group.name} rules={[{ required: group.isRequired, message: 'Vui lòng chọn mục này' }]}>
-                            {group.isMultipleChoice ? (
+                            {group.multipleChoice ? (
                                 <Checkbox.Group style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                                     {group.items?.map(item => (
                                         <Checkbox key={item.itemId} value={item.itemId}>{item.name} {item.extraPrice > 0 && `(+${item.extraPrice.toLocaleString()}đ)`}</Checkbox>

@@ -60,7 +60,11 @@ public class UserEntity {
 
     private LocalDateTime deletedAt;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(
+            mappedBy = "user",
+            cascade = CascadeType.ALL,
+            orphanRemoval = false
+    )
     private Set<UserRoleEntity> userRoles = new HashSet<>();
 
     public enum UserStatus {
@@ -90,5 +94,15 @@ public class UserEntity {
         LOCAL,
         GOOGLE,
         FACEBOOK
+    }
+
+    public void addUserRole(UserRoleEntity ur) {
+        userRoles.add(ur);
+        ur.setUser(this);
+    }
+
+    public void removeUserRole(UserRoleEntity ur) {
+        userRoles.remove(ur);
+        ur.setUser(null);
     }
 }
