@@ -1,27 +1,97 @@
+# =========================================================================
+# 1. CHẶN TOÀN BỘ FILE MẶC ĐỊNH (TƯ DUY WHITELIST)
+# =========================================================================
+# Chặn mọi file ở mọi cấp thư mục
+**/*
 
-.env
-.env.*
-!.env.example
+# 2. CHO PHÉP GIT ĐI VÀO CÁC THƯ MỤC (BẮT BUỘC để các lệnh mở khóa sau có tác dụng)
+!**/
 
-.idea/
-*.iml
-*.iws
-*.ipr
-out/
+# =========================================================================
+# 3. GIỮ LẠI CÁC FILE CẤU HÌNH QUAN TRỌNG Ở THƯ MỤC GỐC
+# =========================================================================
+!.gitattributes
+!.gitignore
+!README.md
+!uni-order-backend/docker-compose.yml
+!uni-order-backend/docker-compose.infra.yml
 
-hs_err_pid*
-replay_pid*
-*.class
+# =========================================================================
+# 4. GIỮ LẠI MÃ NGUỒN VÀ CẤU HÌNH BACKEND (SPRING BOOT MICROSERVICES)
+# =========================================================================
+!**/src/
+!**/src/**
+!**/pom.xml
 
-target/
-build/
-release/
+# Mở khóa toàn bộ Maven Wrapper (Sửa lỗi thiếu file .jar)
+!**/mvnw
+!**/mvnw.cmd
+!**/.mvn/
+!**/.mvn/wrapper/
+!**/.mvn/wrapper/**
 
-*.jar
-*.war
-*.ear
+# =========================================================================
+# 5. GIỮ LẠI MÃ NGUỒN VÀ CẤU HÌNH FRONTEND (REACT / VITE / NEXTJS / TS)
+# =========================================================================
+# Thư mục mã nguồn và tài nguyên tĩnh
+!**/src/
+!**/src/**
+!**/public/
+!**/public/**
 
-logs/
-*.log
+# File quản lý package và monorepo
+!**/package.json
+!**/package-lock.json
+!**/yarn.lock
+!**/turbo.json
+!**/index.ts
 
-uploads/
+# Cấu hình Build và Bundler (Vite, Webpack, Babel, v.v.)
+!**/vite.config.*
+!**/tailwind.config.*
+!**/postcss.config.*
+!**/*.config.js
+!**/*.config.ts
+!**/*.config.cjs
+!**/*.config.mjs
+
+# Cấu hình TypeScript (Sửa lỗi các file tsconfig bị ẩn)
+!**/tsconfig.json
+!**/tsconfig.*.json
+
+# Cấu hình Linter & Formatter (Sửa lỗi eslint bị ẩn)
+!**/.eslintrc*
+!**/eslint.config.*
+!**/.prettierrc*
+
+# Các tài liệu đi kèm
+!**/README.md
+!**/*.html
+!**/*.d.ts
+!**/.env.example
+
+# =========================================================================
+# 6. ĐÈ LÊN ĐỂ CHẶN TRIỆT ĐỂ FILE RÁC (Blacklist đè lên Whitelist)
+# =========================================================================
+# Dù có mở khóa src hay thư mục con, tuyệt đối KHÔNG lấy những thứ này:
+**/node_modules/
+**/target/
+**/bin/
+**/dist/
+**/dist-ssr/
+**/.next/
+**/out/
+
+# Logs
+**/logs/
+**/*.log
+**/npm-debug.log*
+**/yarn-debug.log*
+
+# IDEs & OS rác
+**/.idea/
+**/.vscode/*
+!**/.vscode/extensions.json
+**/*.iml
+**/.DS_Store
+**/Thumbs.db
