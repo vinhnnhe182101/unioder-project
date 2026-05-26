@@ -1,7 +1,6 @@
 package org.example.services.user.service.impl;
 
-import lombok.RequiredArgsConstructor;
-import org.example.auth.UserProfileDTO;
+import org.example.services.user.dto.UserProfileDTO;
 import org.example.common.util.FileStorageUtil;
 import org.example.services.user.dto.UpdateProfileDTO;
 import org.example.services.user.entity.RoleEntity;
@@ -13,7 +12,6 @@ import org.example.services.user.repository.UserRepository;
 import org.example.services.user.repository.UserRoleRepository;
 import org.example.services.user.security.AccountDetails;
 import org.example.services.user.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -1,9 +1,8 @@
 package org.example.services.user.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.example.auth.UserProfileDTO;
+import org.example.services.user.dto.UserProfileDTO;
 import org.example.services.user.dto.UpdateProfileDTO;
-import org.example.services.user.entity.UserEntity;
 import org.example.services.user.security.AccountDetails;
 import org.example.services.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;

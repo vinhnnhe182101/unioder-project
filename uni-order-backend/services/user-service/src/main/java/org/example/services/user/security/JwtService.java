@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -26,36 +27,27 @@ public class JwtService {
     @Value("${application.security.jwt.expiration-ms}")
     private long jwtExpirationMs;
 
+    @Value("${application.security.jwt.refresh-token.expiration-ms}")
+    private long refreshExpirationMs;
+
     private Key getSigningKey() {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public String generateToken(UserEntity userEntity) {
-        Map<String,  Object> claims = new HashMap<>();
-
-        var rolesList = userEntity.getUserRoles().stream()
-                .map(userRoleEntity -> userRoleEntity.getRole().getName())
-                .collect(Collectors.toList());
-        Long restaurantId = userEntity.getUserRoles().stream()
-                        .findFirst()
-                                .map(ur -> ur.getId().getRestaurantId())
-                                        .orElse(0L);
-
-        claims.put("roles", rolesList);
-        claims.put("fullName", userEntity.getFullName());
-        claims.put("restaurantId", restaurantId);
+    public String generateToken(UserEntity userEntity, List<String> roles) {
+        Map<String, Object> claims = new HashMap<>();
         claims.put("userId", userEntity.getUserId());
+        claims.put("roles", roles);
 
-        String subject = userEntity.getEmail();
+        // Lấy restaurantId đầu tiên nếu có để phục vụ phân quyền scope nhà hàng
+        Long restaurantId = userEntity.getUserRoles().stream()
+                .findFirst()
+                .map(ur -> ur.getId().getRestaurantId())
+                .orElse(0L);
+        claims.put("restaurantId", restaurantId);
 
-        return Jwts.builder()
-                .setClaims(claims)
-                .setSubject(subject)
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationMs))
-                .signWith(getSignInKey(), SignatureAlgorithm.HS256)
-                .compact();
+        return buildToken(claims, userEntity.getEmail(), jwtExpirationMs);
     }
 
     public String extractUserId(String token) {
@@ -98,4 +90,30 @@ public class JwtService {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(keyBytes);
     }
+
+    public String generateRefreshToken(UserEntity userEntity) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("userId", userEntity.getUserId());
+        claims.put("tokenType", "REFRESH");
+
+        return buildToken(claims, userEntity.getEmail(), refreshExpirationMs);
+    }
+
+    private String buildToken(Map<String, Object> extraClaims, String subject, long expirationMs) {
+        return Jwts
+                .builder()
+                .setClaims(extraClaims)
+                .setSubject(subject)
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + expirationMs))
+                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
+                .compact();
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<String> extractRoles(String token) {
+        return extractClaim(token, claims -> claims.get("roles", List.class));
+    }
+
+
 }

@@ -1,6 +1,7 @@
 package org.example.services.user.service;
 
-import org.example.auth.*;
+import org.example.services.user.dto.request.*;
+import org.example.services.user.dto.response.AuthResponse;
 
 public interface AuthService {
 
@@ -14,5 +15,7 @@ public interface AuthService {
 
     void resetPassword(ResetPasswordRequest request);
 
-    AuthResponse refreshToken(String email);
+    AuthResponse loginWithGoogle(GoogleLoginRequest request);
+
+    AuthResponse refreshToken(RefreshTokenRequest request);
 }

@@ -2,11 +2,10 @@ package org.example.services.user.controller;
 
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
-import org.example.auth.*;
-import org.example.services.user.security.AccountDetails;
+import org.example.services.user.dto.request.*;
+import org.example.services.user.dto.response.AuthResponse;
 import org.example.services.user.service.impl.AuthServiceImpl;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -67,8 +66,16 @@ public class AuthController {
     }
 
     @PostMapping("/refresh-token")
-    public ResponseEntity<AuthResponse> refreshToken(@AuthenticationPrincipal AccountDetails currentUser) {
-        AuthResponse response = authService.refreshToken(currentUser.getUsername());
+    public ResponseEntity<AuthResponse> refreshToken(
+            @Valid @RequestBody RefreshTokenRequest request
+    ) {
+        AuthResponse response = authService.refreshToken(request);
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/google")
+    public ResponseEntity<AuthResponse> loginWithGoogle(@RequestBody GoogleLoginRequest request) {
+        // request chỉ chứa idToken và appSource="CUSTOMER"
+        return ResponseEntity.ok(authService.loginWithGoogle(request));
     }
 }

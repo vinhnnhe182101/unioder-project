@@ -1,14 +1,10 @@
 package org.example.services.user.config;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.example.auth.AuthResponse;
-import org.example.auth.LoginRequest;
 import org.example.services.user.security.JwtAuthenticationEntryPoint;
 import org.example.services.user.security.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -24,7 +20,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.bind.annotation.RequestBody;
 
 @Configuration
 @EnableWebSecurity
@@ -64,6 +59,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(
                                 "/api/auth/login",
+                                "/api/auth/google",
+                                "/api/auth/refresh-token",
                                 "/api/auth/register",
                                 "/api/auth/verify",
                                 "/api/auth/forgot-password",

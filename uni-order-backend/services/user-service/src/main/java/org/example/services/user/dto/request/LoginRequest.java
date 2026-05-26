@@ -1,4 +1,4 @@
-package org.example.auth;
+package org.example.services.user.dto.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -13,4 +13,7 @@ public class LoginRequest {
 
     @NotBlank(message = "Password can not blank!")
     private String password;
+
+    @NotBlank
+    private String appSource;
 }

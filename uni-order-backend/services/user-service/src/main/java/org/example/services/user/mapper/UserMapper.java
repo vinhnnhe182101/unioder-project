@@ -1,6 +1,6 @@
 package org.example.services.user.mapper;
 
-import org.example.auth.UserProfileDTO;
+import org.example.services.user.dto.UserProfileDTO;
 import org.example.services.user.dto.UpdateProfileDTO;
 import org.example.services.user.entity.RoleEntity;
 import org.example.services.user.entity.UserEntity;

@@ -1,6 +1,6 @@
 package org.example.services.user.service;
 
-import org.example.auth.UserProfileDTO;
+import org.example.services.user.dto.UserProfileDTO;
 import org.example.services.user.dto.UpdateProfileDTO;
 import org.example.services.user.security.AccountDetails;
 import org.springframework.web.multipart.MultipartFile;

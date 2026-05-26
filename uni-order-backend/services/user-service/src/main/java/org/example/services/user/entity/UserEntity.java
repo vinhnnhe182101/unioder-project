@@ -6,7 +6,9 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -105,4 +107,7 @@ public class UserEntity {
         userRoles.remove(ur);
         ur.setUser(null);
     }
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<UserAddressesEntity> address = new ArrayList<>();
 }

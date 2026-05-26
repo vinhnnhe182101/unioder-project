@@ -1,4 +1,4 @@
-package org.example.auth;
+package org.example.services.user.dto;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
