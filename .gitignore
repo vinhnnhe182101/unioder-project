@@ -47,6 +47,8 @@
 !**/yarn.lock
 !**/turbo.json
 !**/index.ts
+!**/pnpm-lock.yaml
+!**/pnpm-workspace.yaml
 
 # Cấu hình Build và Bundler (Vite, Webpack, Babel, v.v.)
 !**/vite.config.*
@@ -71,6 +73,11 @@
 !**/*.html
 !**/*.d.ts
 !**/.env.example
+
+# Cấu hình cho một số thư viện
+# OpenAPI Generator
+!uni-order-frontend/openapitools.json
+uni-order-frontend/**/generated
 
 # =========================================================================
 # 6. ĐÈ LÊN ĐỂ CHẶN TRIỆT ĐỂ FILE RÁC (Blacklist đè lên Whitelist)

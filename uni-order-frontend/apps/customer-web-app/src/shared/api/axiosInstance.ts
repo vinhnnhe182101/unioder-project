@@ -1,7 +1,7 @@
 // shared/api/axiosInstance.ts
 import axios, { type AxiosInstance, type AxiosError, type InternalAxiosRequestConfig } from 'axios';
 
-const BASE_URL = (import.meta.env.VITE_API_URL as string) || 'http://localhost:80/api';
+const BASE_URL = (import.meta.env.VITE_API_URL as string) || 'http://localhost:8080/api';
 
 const axiosInstance: AxiosInstance = axios.create({
     baseURL: BASE_URL,
