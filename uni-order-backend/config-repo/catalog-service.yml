@@ -21,5 +21,8 @@ application:
     jwt:
       secret-key: ${JWT_SECRET_KEY:6B59703373367639792F423F4528482B4D6251655468576D5A7134743777217A} 
 
-
-  
+springdoc:
+  api-docs:
+    path: /api/catalog/v3/api-docs
+  swagger-ui:
+    enabled: false

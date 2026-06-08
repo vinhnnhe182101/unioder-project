@@ -4,7 +4,6 @@ server:
 spring:
   cloud:
     gateway:
-      # Cấu trúc mới yêu cầu khai báo rõ 'server.webflux' cho ứng dụng Reactive
       server:
         webflux:
           discovery:
@@ -15,25 +14,25 @@ spring:
             - id: user-service
               uri: lb://USER-SERVICE
               predicates:
-                - Path=/api/auth/**, /api/users/**, /api/restaurants/**
+                - Path=/api/auth/**, /api/users/**, /api/restaurants/**, /api/user/v3/api-docs
 
             # 2. CATALOG-SERVICE
             - id: catalog-service
               uri: lb://CATALOG-SERVICE
               predicates:
-                - Path=/api/catalog/**, /api/catalog/uploads/**
+                - Path=/api/catalog/**, /api/catalog/uploads/**, /api/catalog/v3/api-docs
 
             # 3. ORDER-SERVICE
             - id: order-service
               uri: lb://ORDER-SERVICE
               predicates:
-                - Path=/api/orders/**, /api/reports/**
+                - Path=/api/orders/**, /api/reports/**, /api/order/v3/api-docs
 
             # 4. NOTIFICATION-SERVICE
             - id: notification-service
               uri: lb://NOTIFICATION-SERVICE
               predicates:
-                - Path=/api/notifications/**, /ws/**
+                - Path=/api/notifications/**, /ws/**, /api/notification/v3/api-docs
               filters:
                 - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials
 
@@ -41,4 +40,27 @@ spring:
             - id: integration-service
               uri: lb://INTEGRATION-SERVICE
               predicates:
-                - Path=/api/integration/**
+                - Path=/api/integration/**, /api/integration/v3/api-docs
+
+springdoc:
+  enable-native-support: true
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+    urls:
+      - name: User Service
+        url: /api/user/v3/api-docs
+        displayName: User Service API
+      - name: Catalog Service
+        url: /api/catalog/v3/api-docs
+        displayName: Catalog Service API
+      - name: Order Service
+        url: /api/order/v3/api-docs
+        displayName: Order Service API
+      - name: Notification Service
+        url: /api/notification/v3/api-docs
+        displayName: Notification Service API
+      - name: Integration Service
+        url: /api/integration/v3/api-docs
+        displayName: Integration Service API
