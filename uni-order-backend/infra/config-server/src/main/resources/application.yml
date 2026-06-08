@@ -1,0 +1,16 @@
+server: # C\u1EA5u h\u00ECnh c\u00E1c th\u00F4ng s\u1ED1 li\u00EAn quan \u0111\u1EBFn m\u00F4i tr\u01B0\u1EDDng ch\u1EA1y c\u1EE7a m\u00E1y ch\u1EE7 nh\u00FAng (Embedded Server)
+  # T\u00E1ch c\u1ED5ng ch\u1EA1y c\u1EE7a Config Server ra bi\u1EBFn CONFIG_SERVER_PORT, m\u1EB7c \u0111\u1ECBnh l\u00E0 8888
+  port: ${CONFIG_SERVER_PORT:8888}
+
+spring: # C\u1EA5u h\u00ECnh c\u00E1c th\u00E0nh ph\u1EA7n l\u00F5i thu\u1ED9c h\u1EC7 sinh th\u00E1i c\u1EE7a framework Spring
+  application:
+    name: config-server
+  profiles:
+    # T\u00E1ch ch\u1EBF \u0111\u1ED9 ch\u1EA1y ra bi\u1EBFn CONFIG_SERVER_PROFILE, m\u1EB7c \u0111\u1ECBnh l\u00E0 native \u0111\u1EC3 \u0111\u1ECDc file local
+    active: ${CONFIG_SERVER_PROFILE:native}
+  cloud: # C\u1EA5u h\u00ECnh c\u00E1c t\u00EDnh n\u0103ng d\u00E0nh cho m\u00F4 h\u00ECnh h\u1EC7 th\u1ED1ng ph\u00E2n t\u00E1n (Microservices) c\u1EE7a Spring Cloud
+    config:
+      server:
+        native:
+          # \u0110\u01AF\u1EDCNG D\u1EAAN \u0110\u1ED8NG: Gh\u00E9p t\u1EEB bi\u1EBFn g\u1ED1c d\u1EF1 \u00E1n ${CONFIG_REPO_ROOT} v\u00E0 t\u00EAn th\u01B0 m\u1EE5c ch\u1EE9a c\u1EA5u h\u00ECnh ${CONFIG_REPO_DIR}
+          search-locations: file:${CONFIG_REPO_ROOT:./uni-order-backend}/${CONFIG_REPO_DIR:config-repo}/
