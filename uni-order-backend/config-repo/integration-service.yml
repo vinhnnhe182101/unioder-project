@@ -1,0 +1,27 @@
+server:
+  port: ${INTEGRATION_SERVICE_PORT:0}
+
+spring:
+  datasource:
+    url: jdbc:mysql://${INTEGRATION_DB_HOST:localhost}:${INTEGRATION_DB_PORT:3311}/${INTEGRATION_DB_NAME:integration_service}
+    username: ${INTEGRATION_DB_USERNAME:root}
+    password: ${INTEGRATION_DB_PASSWORD:root}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+
+  flyway:
+    baseline-on-migrate: true
+    # enabled: false
+
+application:
+  security:
+    jwt:
+      secret-key: ${JWT_SECRET_KEY:6B59703373367639792F423F4528482B4D6251655468576D5A7134743777217A}
+
+facebook:
+  webhook:
+    verify-token: ${FB_WEBHOOK_VERIFY_TOKEN:uniorder_verify_token}

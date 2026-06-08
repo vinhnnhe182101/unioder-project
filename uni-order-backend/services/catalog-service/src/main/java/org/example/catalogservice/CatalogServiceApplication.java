@@ -8,7 +8,6 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Import;
 
 @SpringBootApplication
-@EnableDiscoveryClient
 @EnableFeignClients
 @Import(CommonBeanConfig.class)
 public class CatalogServiceApplication {
