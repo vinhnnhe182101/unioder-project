@@ -73,6 +73,8 @@
 !**/*.html
 !**/*.d.ts
 !**/.env.example
+!**/.env
+**.key
 
 # Cấu hình cho một số thư viện
 # OpenAPI Generator
