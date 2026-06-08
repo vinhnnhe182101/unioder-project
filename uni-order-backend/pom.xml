@@ -12,15 +12,17 @@
 	<description>Root POM for the Multi-Restaurant Microservices Project</description>
 
 	<modules>
+		<module>infra/eureka-server</module>
+		<module>infra/api-gateway</module>
 		<module>infra/config-server</module>
+		
 		<module>services/user-service</module>
 		<module>services/catalog-service</module>
-		<module>libs/common-dto</module>
-		<module>services/service-registry</module>
-		<module>services/api-gateway</module>
 		<module>services/order-service</module>
 		<module>services/notification-service</module>
 		<module>services/integration-service</module>
+		
+		<module>shared/common-dto</module>
 	</modules>
 
 	<properties>
