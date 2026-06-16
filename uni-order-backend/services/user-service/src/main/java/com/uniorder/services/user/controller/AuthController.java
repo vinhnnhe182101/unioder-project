@@ -3,7 +3,6 @@ package com.uniorder.services.user.controller;
 import com.uniorder.services.user.dto.request.*;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
-import com.uniorder.services.user.dto.request.*;
 import com.uniorder.services.user.dto.response.AuthResponse;
 import com.uniorder.services.user.service.impl.AuthServiceImpl;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +26,15 @@ public class AuthController {
     ) {
         authService.register(registerRequest);
         return ResponseEntity.ok("Register Success. Please check your email to verify your account.");
+    }
+
+    // New endpoint for merchant registration
+    @PostMapping("/register/merchant")
+    public ResponseEntity<String> registerMerchant(
+            @Valid @RequestBody RegisterMerchantRequest registerRequest
+    ) {
+        authService.registerMerchant(registerRequest);
+        return ResponseEntity.ok("Merchant registration success. Please check your email to verify your account.");
     }
 
     @PostMapping("/login")

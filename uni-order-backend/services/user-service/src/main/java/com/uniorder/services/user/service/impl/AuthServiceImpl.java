@@ -7,7 +7,6 @@ import com.google.api.client.json.gson.GsonFactory;
 import com.uniorder.services.user.dto.request.*;
 import jakarta.transaction.Transactional;
 import com.uniorder.services.user.dto.UserProfileDTO;
-import com.uniorder.services.user.dto.request.*;
 import com.uniorder.services.user.security.AccountDetails;
 import org.springframework.beans.factory.annotation.Value;
 import com.uniorder.services.user.dto.response.AuthResponse;
@@ -90,6 +89,39 @@ public class AuthServiceImpl implements AuthService {
 
         UserRoleEntity userRoleEntity = new UserRoleEntity(savedUserEntity, defaultRole, platformRestaurantId);
 
+        userRoleRepository.save(userRoleEntity);
+
+        emailService.sendVerificationEmail(savedUserEntity.getEmail(), token);
+    }
+
+    // New merchant registration flow: assign merchant role and link to restaurant
+    @Transactional
+    @Override
+    public void registerMerchant(RegisterMerchantRequest request) {
+        if (userRepository.existsByEmail(request.getEmail())) {
+            throw new VerificationException("Email already exists");
+        }
+
+        UserEntity userEntity = new UserEntity();
+        userEntity.setEmail(request.getEmail());
+        userEntity.setFullName(request.getFullName());
+        userEntity.setPasswordHash(passwordEncoder.encode(request.getPassword()));
+        userEntity.setProvider(UserEntity.AuthProvider.LOCAL);
+
+        userEntity.setEnabled(false);
+        String token = UUID.randomUUID().toString();
+        userEntity.setVerificationToken(token);
+        userEntity.setTokenExpirationTime(LocalDateTime.now().plusMinutes(15));
+
+        UserEntity savedUserEntity = userRepository.save(userEntity);
+
+        String roleName = request.getRoleName() != null ? request.getRoleName() : "ROLE_OWNER";
+        RoleEntity merchantRole = roleRepository.findByName(roleName)
+                .orElseThrow(() -> new RuntimeException("Role " + roleName + " Not Found"));
+
+        Long platformRestaurantId = request.getRestaurantId();
+
+        UserRoleEntity userRoleEntity = new UserRoleEntity(savedUserEntity, merchantRole, platformRestaurantId);
         userRoleRepository.save(userRoleEntity);
 
         emailService.sendVerificationEmail(savedUserEntity.getEmail(), token);
