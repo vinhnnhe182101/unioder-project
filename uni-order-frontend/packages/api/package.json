@@ -18,11 +18,11 @@
     "scripts": {
         "lint": "eslint . --max-warnings 0",
         "generate:component": "turbo gen react-component",
-        "check-types": "tsc --noemit"
+        "check-types": "tsc --noEmit"
     },
-    "devdependencies": {
+    "devDependencies": {
         "@eslint/js": "^10.0.1",
-        "@types/node": "^22.19.20",
+        "@types/node": "^22.15.3",
         "@types/react": "19.2.2",
         "@types/react-dom": "19.2.2",
         "axios": "^1.17.0",
@@ -32,11 +32,11 @@
         "globals": "^17.6.0",
         "path": "^0.12.7",
         "typescript": "5.9.2",
-        "typescript-eslint": "^8.60.1",
-        "url": "^0.11.4"
+        "typescript-eslint": "^8.60.1"
     },
     "dependencies": {
         "react": "^19.2.0",
-        "react-dom": "^19.2.0"
+        "react-dom": "^19.2.0",
+        "sonner": "^2.0.7"
     }
 }

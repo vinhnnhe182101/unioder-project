@@ -14,8 +14,7 @@ spring:
     show-sql: true
 
   flyway:
-    enabled: false
-    # baseline-on-migrate: true
+    enabled: true
 
 application:
   security:

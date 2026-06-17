@@ -13,8 +13,7 @@ spring:
       ddl-auto: none
 
   flyway:
-    enabled: false
-    # baseline-on-migrate: true
+    baseline-on-migrate: true
 
 application:
   security:

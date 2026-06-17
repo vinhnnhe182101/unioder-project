@@ -20,10 +20,10 @@ export const ForgotPasswordPage: React.FC = () => {
     setLoading(true);
     try {
       if (!token) {
-        await (authApiClient.forgotPassword ? authApiClient.forgotPassword({ email } as any) : authApiClient.forgotPassword({ email } as any));
+        await authApiClient.forgotPassword({ email } as any);
         toast.success('Hệ thống đã gửi link đổi mật khẩu vào Mail của bạn.');
       } else {
-        await (authApiClient.resetPassword ? authApiClient.resetPassword({ token, newPassword } as any) : authApiClient.resetPassword({ token, newPassword } as any));
+        await authApiClient.resetPassword({ token, newPassword } as any);
         toast.success('Đổi mật khẩu thành công! Hãy đăng nhập lại.');
         navigate(PATHS.LOGIN);
       }
@@ -80,3 +80,4 @@ export const ForgotPasswordPage: React.FC = () => {
     </div>
   );
 };
+

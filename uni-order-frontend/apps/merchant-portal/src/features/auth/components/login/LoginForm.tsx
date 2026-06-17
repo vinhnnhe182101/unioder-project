@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import {type SubmitEventHandler, useState} from "react";
 import {toast} from "sonner";
 import {AppInput} from "../../../../components/AppInput";
 import {Link} from "react-router-dom";
@@ -13,7 +13,7 @@ export const LoginForm = () => {
 	const [loading, setLoading] = useState(false);
 	const navigate = useNavigate();
 
-	const onSubmit = async (e: React.FormEvent) => {
+	const onSubmit :  SubmitEventHandler<HTMLFormElement> = async (e) => {
 		e.preventDefault();
 		setLoading(true);
 		try {

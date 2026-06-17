@@ -14,7 +14,6 @@ spring:
       ddl-auto: none
 
   flyway:
-    # Báo cho Flyway tạo baseline khi CSDL đã có sẵn bảng
     baseline-on-migrate: true
 
   mail:

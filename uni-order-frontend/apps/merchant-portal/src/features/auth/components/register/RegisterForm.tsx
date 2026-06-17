@@ -52,7 +52,7 @@ export const RegisterForm = () => {
 		setIsLoading(true);
 
 		try {
-			const response = await authApiClient.registerMerchant ? await authApiClient.registerMerchant(payload) : await authApiClient.register(payload);
+			const response = await authApiClient.registerMerchant(payload);
 			const status = response?.status || (response && response.data ? 200 : 201);
 			if (status === 200 || status === 201) {
 				toast.success("Tạo tài khoản Đối Tác Nhà Hàng thành công! Vui lòng kiểm tra email để xác thực.");
